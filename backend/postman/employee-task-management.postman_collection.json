@@ -1,0 +1,98 @@
+{
+  "info": {
+    "_postman_id": "b5c9ce1a-1d6d-4a3f-b0f0-employee-task-api",
+    "name": "Employee Task Management System",
+    "description": "Postman collection for the Employee Task Management System REST API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "employeeId", "value": "1" },
+    { "key": "taskId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Add employee",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul.{{timestamp}}@example.com\",\n  \"department\": \"Engineering\",\n  \"jobTitle\": \"Java Developer\"\n}" },
+        "url": "{{baseUrl}}/api/employees"
+      },
+      "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["pm.collectionVariables.set('timestamp', Date.now());"] } }, { "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201) pm.collectionVariables.set('employeeId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "Get all employees",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees" }
+    },
+    {
+      "name": "Get employee by ID",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees/{{employeeId}}" }
+    },
+    {
+      "name": "Search employee by name",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees/search?name=Rahul" }
+    },
+    {
+      "name": "Search employee by department",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees/search?department=Engineering" }
+    },
+    {
+      "name": "Update employee",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul.updated@example.com\",\n  \"department\": \"Engineering\",\n  \"jobTitle\": \"Senior Java Developer\"\n}" },
+        "url": "{{baseUrl}}/api/employees/{{employeeId}}"
+      }
+    },
+    {
+      "name": "Assign task",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Complete Spring Boot Training\",\n  \"description\": \"Complete the assigned Spring Boot development training.\",\n  \"priority\": \"HIGH\",\n  \"dueDate\": \"2026-08-30\",\n  \"employeeId\": {{employeeId}}\n}" },
+        "url": "{{baseUrl}}/api/tasks"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201) pm.collectionVariables.set('taskId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "Get all tasks",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/tasks" }
+    },
+    {
+      "name": "Get task by ID",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/tasks/{{taskId}}" }
+    },
+    {
+      "name": "Get employee tasks",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/employees/{{employeeId}}/tasks" }
+    },
+    {
+      "name": "Update task",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Complete Spring Boot Training\",\n  \"description\": \"Finish Spring Boot training and submit the assignment.\",\n  \"status\": \"IN_PROGRESS\",\n  \"priority\": \"HIGH\",\n  \"dueDate\": \"2026-08-30\",\n  \"employeeId\": {{employeeId}}\n}" },
+        "url": "{{baseUrl}}/api/tasks/{{taskId}}"
+      }
+    },
+    {
+      "name": "Update task status",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"COMPLETED\"\n}" },
+        "url": "{{baseUrl}}/api/tasks/{{taskId}}/status"
+      }
+    },
+    {
+      "name": "Delete task",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/tasks/{{taskId}}" }
+    },
+    {
+      "name": "Delete employee",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/employees/{{employeeId}}" }
+    }
+  ]
+}
